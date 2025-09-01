@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "282813735147",
+    "project_id": "learning-coding-app",
+    "storage_bucket": "learning-coding-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282813735147:android:842c45300d4c1d4de51eae",
+        "android_client_info": {
+          "package_name": "com.example.learningcodingapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm18BrhGuToK690s7mRidA-laRzA5qi9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
