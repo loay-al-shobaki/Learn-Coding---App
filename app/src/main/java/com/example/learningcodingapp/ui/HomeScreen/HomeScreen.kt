@@ -324,7 +324,7 @@ private fun BannerCard(
                     text = cta,
                     color = Color(0xFF2E3E87),
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 4.dp)
                 )
             }
         }
@@ -336,7 +336,7 @@ private fun BannerCard(
             modifier = Modifier
                 .size(120.dp) // أكبر حتى تتجاوز القوس
                 .align(Alignment.CenterEnd)
-                .padding(end = 32.dp ,)
+                .padding(end = 38.dp , bottom = 38.dp)
         )
     }
 }
