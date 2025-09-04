@@ -99,6 +99,16 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.0")
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation ("com.google.firebase:firebase-storage-ktx") // أضف هذا
+    // كوروتينات + await() لمهام فايربيز
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+
+    // عرض صورة الشبكة
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // أيقونات
+    implementation ("androidx.compose.material:material-icons-extended")
 }
 kapt {
     correctErrorTypes = true

@@ -35,6 +35,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,7 +63,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
-private object T {
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.learningcodingapp.data.UserProfile.ProfileViewModel
+import com.google.firebase.auth.FirebaseAuth
+
+object T {
     val bg = Color(0xFFF6F8FF)           // خلفية عامة
     val surface = Color(0xFFFFFFFF)      // بطاقات بيضاء
     val primary = Color(0xFF343F8F)      // أزرق داكن
@@ -74,28 +80,35 @@ private object T {
 
 @Composable
 fun HomeScreen() {
-    val navItems = listOf(
-        NavItem("Home", Icons.Filled.Home),
-        NavItem("Quizz", Icons.Filled.Article),
-        NavItem("Rank", Icons.Filled.EmojiEvents),
-        NavItem("Settings", Icons.Filled.Settings)
-    )
-    var selected by remember { mutableStateOf(0) }
-    Scaffold(
-        containerColor = T.bg,
-        bottomBar = {
-            BottomDock(navItems, selectedIndex = selected) { i -> selected = i }
-        }
-    ) { inner ->
-        HomeContent(Modifier.padding(inner))
+    val user = FirebaseAuth.getInstance().currentUser
+    val vm: ProfileViewModel = viewModel()
+    val ui = vm.state.collectAsState().value
+    LaunchedEffect(Unit) {
+        if (ui.profile == null && !ui.loading && ui.error == null) vm.refresh()
     }
+
+    val userName = remember(user) {
+        user?.displayName?.takeIf { it.isNotBlank() }
+            ?: user?.email?.substringBefore("@")
+            ?: "User"
+    }
+    val userEmail = user?.email.orEmpty()
+    val userPoints = 160 // خليه ثابت أو اربطه بمصدر لاحقًا
+
+        HomeContent(
+                modifier = Modifier,
+            name = userName,
+            email = userEmail,
+            points = userPoints)
+
 
 }
 @Composable
-private fun HomeContent(modifier: Modifier = Modifier) {
-    val userName = "Feras-ahmad"
-    val userEmail = "email@any"
-    val userPoints = 160
+private fun HomeContent(
+    modifier: Modifier = Modifier,
+                          name: String,
+                          email: String,
+                          points: Int) {
 
     Column(
         modifier
@@ -106,9 +119,7 @@ private fun HomeContent(modifier: Modifier = Modifier) {
     ) {
 
 
-        // Header card (avatar + name + points chip)
-        HeaderRow(userName, userEmail, userPoints)
-
+        HeaderRow(name, email, points)
         Spacer(Modifier.height(14.dp))
 
         // Banner like Figma
@@ -506,60 +517,7 @@ private fun ScoreBadge(score: Int, total: Int, ringColor: Color) {
     }
 }
 
-/* =========================
-   Bottom Dock (rounded container)
-   ========================= */
-data class NavItem(val label: String, val icon: ImageVector)
 
-@Composable
-private fun BottomDock(items: List<NavItem>, selectedIndex: Int, onSelect: (Int) -> Unit) {
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-    ) {
-        Surface(
-            shape = RoundedCornerShape(18.dp),
-            color = Color.White,
-            tonalElevation = 2.dp,
-            shadowElevation = 10.dp,
-            border = BorderStroke(1.dp, T.borderSoft),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(62.dp)
-        ) {}
-        Row(
-            Modifier
-                .matchParentSize()
-                .padding(horizontal = 22.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            items.forEachIndexed { i, item ->
-                val isSel = i == selectedIndex
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .clickable { onSelect(i) }
-                        .padding(horizontal = 8.dp, vertical = 6.dp)
-                ) {
-                    Icon(
-                        item.icon, contentDescription = item.label,
-                        tint = if (isSel) T.primary else T.textMuted.copy(.9f),
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        item.label,
-                        fontSize = 11.sp,
-                        color = if (isSel) T.primary else T.textMuted
-                    )
-                }
-            }
-        }
-    }
-}
 @Preview(showBackground = true)
 @Composable
 private fun PreviewHome_ProUI() {
